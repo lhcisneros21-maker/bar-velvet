@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tarjeta Bar Velvet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Concepto: sala oscura con listones de madera y luz cálida de lámparas; oro cepillado sobre negro,
+   títulos en serif de alto contraste, botones rectos como en barvelvet.cl. */
+:root{
+  --bg:#070707; --panel:#11100d; --panel-2:#17140f;
+  --gold:#c99a3d; --gold-hi:#e8c982; --gold-lo:#8a6a2b;
+  --ivory:#f3eee5; --mut:#aaa192; --line:rgba(201,154,61,.32); --line-2:rgba(243,238,229,.11);
+  --ok:#86d4a4; --warn:#e9a86b; --ink:#0a0907;
+  --display:"Cormorant Garamond","Cormorant",Georgia,"Times New Roman",serif;
+  --ui:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ivory);font-family:var(--ui);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(70% 38% at 50% -6%,rgba(236,192,104,.24),transparent 72%),
+             repeating-linear-gradient(90deg,rgba(201,154,61,.05) 0 2px,transparent 2px 28px);
+  -webkit-mask-image:linear-gradient(#000 0,transparent 78%);mask-image:linear-gradient(#000 0,transparent 78%)}
+.wrap{max-width:460px;margin:0 auto;padding-bottom:56px}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
+[hidden]{display:none!important}
+svg{display:block}
+.ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* barra de maqueta */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(7,7,7,.97);border-bottom:1px solid var(--line-2);padding:10px 0}
+.rib{display:flex;justify-content:space-between;gap:12px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.rib b{color:var(--gold);font-weight:600}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tabs button,.sub button{border:1px solid var(--line);background:transparent;padding:10px 8px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.tabs button[aria-selected=true],.sub button[aria-selected=true]{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+/* encabezado */
+.hero{text-align:center;padding:34px 0 8px}
+.orn{width:150px;height:14px;margin:0 auto;color:var(--gold)}
+.wm{margin:14px 0 12px;font-family:var(--display);font-weight:600;font-size:clamp(58px,18vw,78px);letter-spacing:.07em;line-height:1;
+  color:var(--gold-hi);padding-left:.07em;
+  background:linear-gradient(180deg,#f6dd9e 0%,#d3a548 52%,#a07a2a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 22px rgba(236,192,104,.32))}
+.kick{margin:14px 0 0;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.tag{margin:10px 0 0;font-family:var(--display);font-style:italic;font-weight:500;font-size:25px;line-height:1.2;color:var(--ivory)}
+.status{display:inline-flex;align-items:center;gap:9px;margin:20px 0 0;padding:7px 14px;border:1px solid var(--line-2);border-radius:99px;font-size:12.5px;color:var(--ivory);background:rgba(255,255,255,.03)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.status.open .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(134,212,164,.16)}
+
+/* botones */
+.btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 18px;border:1px solid var(--gold);border-radius:2px;
+  font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;cursor:pointer;background:transparent;color:var(--gold-hi);overflow:hidden}
+.btn.gold{background:var(--gold);color:var(--ink)}
+.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.shine::after{content:"";position:absolute;top:0;bottom:0;left:-50%;width:30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.42),transparent);transform:skewX(-18deg);animation:sh 5.5s ease-in-out infinite}
+@keyframes sh{0%,68%{transform:translateX(0) skewX(-18deg)}100%{transform:translateX(560%) skewX(-18deg)}}
+.cta{margin-top:20px}
+.fine{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--mut);text-align:center}
+
+/* secciones */
+.sec{margin-top:34px}
+.sh{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.sh::after{content:"";flex:1;height:1px;background:var(--line)}
+.hh{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:18px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(201,154,61,.14),rgba(201,154,61,.03));border-radius:2px;margin-top:22px}
+.hh .x{font-family:var(--display);font-weight:700;font-size:52px;line-height:1;color:var(--gold-hi)}
+.hh small{display:block;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.hh b{display:block;margin:3px 0 2px;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.15}
+.hh span{font-size:12.5px;color:var(--mut)}
+.hh .live{color:var(--ok)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;gap:14px;min-height:112px;padding:16px 14px;background:var(--panel);border:1px solid var(--line-2);border-radius:2px;text-decoration:none;text-align:left;cursor:pointer;transition:border-color .2s,transform .2s}
+.tile:hover{border-color:var(--gold);transform:translateY(-1px)}
+.tile .ic{color:var(--gold)}
+.tile strong{display:block;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.1}
+.tile small{display:block;margin-top:3px;font-size:12px;line-height:1.35;color:var(--mut)}
+.hours{border:1px solid var(--line-2);background:var(--panel);border-radius:2px}
+.hours div{display:flex;justify-content:space-between;gap:12px;padding:13px 16px;font-size:14px;border-top:1px solid var(--line-2)}
+.hours div:first-child{border-top:0}
+.hours div.today{color:var(--gold-hi);background:rgba(201,154,61,.08)}
+.hours em{font-style:normal;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-left:8px;color:var(--gold)}
+.hours span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* reseñas */
+.score{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.score b{font-family:var(--display);font-weight:600;font-size:64px;line-height:.9;color:var(--gold-hi)}
+.stars{color:var(--gold);letter-spacing:.14em;font-size:18px;line-height:1}
+.score span{display:block;margin-top:5px;font-size:13px;color:var(--mut)}
+.quotes{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin-bottom:12px;scrollbar-width:thin;scrollbar-color:var(--gold-lo) transparent}
+.quotes figure{flex:0 0 78%;margin:0;padding:16px;border:1px solid var(--line-2);background:var(--panel);border-radius:2px;scroll-snap-align:start}
+.quotes blockquote{margin:0;font-family:var(--display);font-style:italic;font-weight:500;font-size:20px;line-height:1.25}
+.quotes figcaption{margin-top:10px;font-size:11.5px;letter-spacing:.06em;color:var(--mut)}
+
+/* visita */
+.info{border:1px solid var(--line-2);background:var(--panel);border-radius:2px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px 13px 16px;border-top:1px solid var(--line-2)}
+.row:first-child{border-top:0}
+.row small{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.row div{min-width:0;overflow-wrap:anywhere;font-size:14px}
+.cp{flex:none;display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);background:transparent;color:var(--gold);border-radius:2px;cursor:pointer}
+.cp .ic svg{width:18px;height:18px}
+.maplink{margin-top:10px}
+
+/* teaser del club */
+.club-t{position:relative;padding:22px 18px;border:1px solid var(--gold);border-radius:2px;background:radial-gradient(120% 100% at 100% 0,rgba(236,192,104,.16),transparent 62%),var(--panel-2)}
+.chip{display:inline-block;padding:3px 9px;border:1px solid var(--line);border-radius:99px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-hi)}
+.club-t h3{margin:12px 0 6px;font-family:var(--display);font-weight:600;font-size:30px;line-height:1.05}
+.club-t p{margin:0 0 16px;color:var(--mut);font-size:14px}
+footer{margin-top:40px;text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+footer .orn{margin-bottom:14px}
+
+/* club */
+.chero{text-align:center;padding:30px 0 6px}
+.chero h2{margin:10px 0 6px;font-family:var(--display);font-weight:600;font-size:38px;line-height:1.05}
+.chero p{margin:0;color:var(--mut);font-size:14px}
+.sub{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0 18px}
+.sub button{padding:10px 4px;font-size:10.5px;letter-spacing:.12em}
+.demo{margin:0 0 14px;text-align:center}
+.member{position:relative;padding:20px;border:1px solid var(--gold);border-radius:4px;
+  background:radial-gradient(120% 90% at 100% 0,rgba(236,192,104,.2),transparent 60%),repeating-linear-gradient(135deg,rgba(201,154,61,.06) 0 1px,transparent 1px 8px),#0b0a08}
+.m-top{display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.m-pts{display:flex;align-items:baseline;gap:10px;margin:22px 0 4px}
+.m-pts b{font-family:var(--display);font-weight:600;font-size:72px;line-height:.9;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.m-pts span{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.m-name{font-size:13px;color:var(--ivory)}
+.bar{height:6px;margin:18px 0 10px;background:rgba(243,238,229,.1);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-lo),var(--gold-hi));border-radius:99px;transition:width .5s}
+.m-next{margin:0;font-size:13px;color:var(--mut)}
+.pend{margin:14px 0 0;padding:18px;border:1px dashed var(--gold);border-radius:2px;text-align:center;background:rgba(201,154,61,.07)}
+.pend p{margin:0;font-size:13px;color:var(--mut)}
+.code{display:block;margin:8px 0 4px;font-family:var(--display);font-weight:700;font-size:44px;letter-spacing:.12em;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.pend small{display:block;margin-bottom:12px;font-size:12px;color:var(--mut)}
+.mini{padding:9px 14px;border:1px solid var(--line);background:transparent;color:var(--gold-hi);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border-radius:2px;cursor:pointer}
+.mini:disabled{opacity:.4;cursor:not-allowed}
+.mini.solid{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.rw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line-2)}
+.rw:first-child{border-top:0}
+.rw b{display:block;font-family:var(--display);font-weight:600;font-size:20px;line-height:1.15}
+.rw small{display:block;font-size:12px;color:var(--mut)}
+.rw .c{font-variant-numeric:tabular-nums;color:var(--gold-hi)}
+.rw .st{font-size:12px;color:var(--mut);white-space:nowrap}
+.list{border:1px solid var(--line-2);background:var(--panel);border-radius:2px}
+.log{margin:0;padding:0;list-style:none}
+.log li{display:flex;gap:12px;padding:11px 16px;border-top:1px solid var(--line-2);font-size:13px}
+.log li:first-child{border-top:0}
+.log time{flex:none;width:52px;color:var(--gold);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
+.pin{padding:22px 18px;border:1px solid var(--line);background:var(--panel);border-radius:2px;text-align:center}
+.pin h3{margin:0 0 4px;font-family:var(--display);font-weight:600;font-size:26px}
+.pin p{margin:0 0 16px;font-size:13px;color:var(--mut)}
+.dots{display:flex;justify-content:center;gap:14px;margin:0 0 18px}
+.dots i{width:14px;height:14px;border:1px solid var(--gold);border-radius:50%}
+.dots i.f{background:var(--gold)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto}
+.pad button{padding:15px 0;border:1px solid var(--line-2);background:var(--panel-2);font-size:20px;font-weight:500;border-radius:2px;cursor:pointer;font-variant-numeric:tabular-nums}
+.pad button:active{background:var(--gold);color:var(--ink)}
+.err{color:var(--warn)!important}
+.who{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;font-size:12.5px;color:var(--mut)}
+.who b{color:var(--ivory);font-weight:600}
+.scan{padding:18px;border:1px solid var(--gold);border-radius:2px;background:radial-gradient(120% 100% at 100% 0,rgba(236,192,104,.14),transparent 62%),var(--panel-2);margin-bottom:12px}
+.scan small{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.scan h3{margin:6px 0 2px;font-family:var(--display);font-weight:600;font-size:28px}
+.scan p{margin:0 0 14px;font-size:13px;color:var(--mut)}
+.note{margin:10px 0 0;padding:11px 13px;border:1px solid rgba(233,168,107,.45);background:rgba(233,168,107,.08);border-radius:2px;font-size:13px;color:var(--ivory)}
+.rules{margin:0;padding:0 0 0 18px;font-size:13px;color:var(--mut)}
+.rules li{margin:6px 0}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{padding:16px 14px;border:1px solid var(--line-2);background:var(--panel);border-radius:2px}
+.kpi b{display:block;font-family:var(--display);font-weight:600;font-size:40px;line-height:1;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.kpi span{display:block;margin-top:6px;font-size:12px;color:var(--mut)}
+.chart{padding:16px;border:1px solid var(--line-2);background:var(--panel);border-radius:2px}
+.chart h4{margin:0 0 4px;font-size:13px;font-weight:600}
+.chart p{margin:0 0 14px;font-size:12px;color:var(--mut)}
+.bars{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end;height:150px;border-bottom:1px solid var(--line)}
+.bars div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;height:100%}
+.bars i{display:block;width:100%;background:linear-gradient(var(--gold-hi),var(--gold-lo));border-radius:2px 2px 0 0}
+.bars em{font-style:normal;font-size:11px;color:var(--ivory);font-variant-numeric:tabular-nums}
+.axis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:6px;text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.how{margin-top:26px;border:1px solid var(--line-2);background:var(--panel);border-radius:2px}
+.how summary{padding:15px 16px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);cursor:pointer}
+.how .in{padding:0 16px 16px;font-size:13.5px;color:var(--mut)}
+.how ol,.how ul{margin:8px 0 12px;padding-left:20px}
+.how li{margin:6px 0}
+.how h5{margin:14px 0 2px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.reset{margin-top:22px;text-align:center}
+
+/* ventana emergente */
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.74);display:flex;align-items:flex-end;justify-content:center}
+.sin{width:100%;max-width:460px;max-height:88vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;padding:0 18px calc(28px + env(safe-area-inset-bottom,0px));animation:up .28s ease-out}
+.grab{width:42px;height:4px;margin:10px auto 0;border-radius:9px;background:rgba(243,238,229,.25)}
+.sh2{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0 12px;background:var(--panel)}
+.sh2 h3{margin:0;font-family:var(--display);font-weight:600;font-size:27px;line-height:1.1}
+.sh2 button{flex:none;width:36px;height:36px;border:1px solid var(--line);background:transparent;border-radius:50%;cursor:pointer;color:var(--ivory)}
+.sin p{margin:0 0 12px;color:var(--mut);font-size:14px}
+.sin h5{margin:18px 0 6px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.sin ul{list-style:none;margin:0 0 14px;padding:0}
+.sin li{padding:12px 14px;margin:7px 0;border:1px solid var(--line-2);background:var(--panel-2);border-radius:2px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;max-width:min(92vw,420px);padding:11px 16px;border:1px solid var(--gold);background:#14110c;color:var(--ivory);font-size:13px;border-radius:2px;box-shadow:0 10px 30px #000a}
+
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.fade>*{animation:up .6s ease both}
+.fade>*:nth-child(2){animation-delay:.06s}.fade>*:nth-child(3){animation-delay:.12s}.fade>*:nth-child(4){animation-delay:.18s}.fade>*:nth-child(5){animation-delay:.24s}
+@media (prefers-reduced-motion:reduce){.fade>*,.sin{animation:none}.shine::after{animation:none;display:none}.bar i{transition:none}}
+@media (min-width:720px){.wrap{border-left:1px solid var(--line-2);border-right:1px solid var(--line-2);padding-left:24px;padding-right:24px;max-width:520px}}
+</style>
+
+<div class="bg" aria-hidden="true"></div>
+<main class="wrap">
+  <div class="top">
+    <div class="rib"><span>Maqueta de presentación</span><b>Glowshot</b></div>
+    <nav class="tabs" role="tablist" aria-label="Vistas de la maqueta">
+      <button role="tab" id="tab-card" data-go="#tarjeta" aria-selected="true">Tarjeta NFC</button>
+      <button role="tab" id="tab-club" data-go="#club" aria-selected="false">Club Velvet · demo</button>
+    </nav>
+  </div>
+
+  <!-- ===== TARJETA ===== -->
+  <section id="v-card">
+    <header class="hero fade">
+      <svg class="orn" viewBox="0 0 160 14" aria-hidden="true"><path d="M0 7H62M98 7H160" stroke="currentColor" fill="none"/><path d="M80 1.5L85.5 7L80 12.5L74.5 7Z" fill="none" stroke="currentColor"/><circle cx="68" cy="7" r="1.4" fill="currentColor"/><circle cx="92" cy="7" r="1.4" fill="currentColor"/></svg>
+      <h1 class="wm">VELVET</h1>
+      <p class="kick">Bar · Restaurante · Providencia</p>
+      <p class="tag">El arte de disfrutar la noche.</p>
+      <p class="status" id="status"><i class="dot"></i><span id="stxt">Consultando horario…</span></p>
+    </header>
+
+    <div class="cta">
+      <a class="btn gold shine" id="wa" href="#" target="_blank" rel="noopener"><span class="ic" data-i="wa"></span>Reservar mesa</a>
+      <p class="fine">Tolerancia de espera: 30 minutos. Para eventos y cumpleaños, consulta por WhatsApp.</p>
+    </div>
+
+    <div class="hh">
+      <div class="x">2×1</div>
+      <div><small>Happy Hour</small><b>Lunes a sábado, 17:00 a 20:00</b><span id="hhs"></span></div>
+    </div>
+
+    <section class="sec">
+      <h2 class="sh">Explora</h2>
+      <div class="tiles" id="tiles"></div>
+    </section>
+
+    <section class="sec">
+      <h2 class="sh">Horarios</h2>
+      <div class="hours" id="hours"></div>
+    </section>
+
+    <section class="sec">
+      <h2 class="sh">Lo que dicen en Google</h2>
+      <div class="score"><b>4,9</b><div><div class="stars" aria-label="4,9 de 5 estrellas">★★★★★</div><span>22 reseñas en Google Maps</span></div></div>
+      <div class="quotes" tabindex="0" aria-label="Reseñas destacadas">
+        <figure><blockquote>“Excelente servicio, la comida de primera.”</blockquote><figcaption>Agata Producciones · septiembre 2026</figcaption></figure>
+        <figure><blockquote>“Muy cálido el ambiente y exquisitas las tablas.”</blockquote><figcaption>Lorena R. · septiembre 2026</figcaption></figure>
+        <figure><blockquote>“Recomiendo Tropic Velvet, súper frutal.”</blockquote><figcaption>Fran G. · octubre 2026</figcaption></figure>
+      </div>
+      <a class="btn" id="rev" href="#" target="_blank" rel="noopener">Deja tu reseña en Google ↗</a>
+    </section>
+
+    <section class="sec">
+      <h2 class="sh">Visítanos</h2>
+      <div class="info" id="info"></div>
+      <a class="btn maplink" href="https://maps.app.goo.gl/CbEu5MXxGpbeQvU68" target="_blank" rel="noopener"><span class="ic" data-i="pin"></span>Cómo llegar</a>
+    </section>
+
+    <section class="sec">
+      <div class="club-t">
+        <span class="chip">Próximamente</span>
+        <h3>Club Velvet</h3>
+        <p>Cada visita con tu llavero Velvet suma puntos. Canjéalos por cócteles, entradas y sorpresas.</p>
+        <button class="btn gold shine" data-go="#club">Ver cómo funciona →</button>
+      </div>
+    </section>
+
+    <footer>
+      <svg class="orn" viewBox="0 0 160 14" aria-hidden="true"><path d="M0 7H62M98 7H160" stroke="currentColor" fill="none"/><path d="M80 1.5L85.5 7L80 12.5L74.5 7Z" fill="none" stroke="currentColor"/><circle cx="68" cy="7" r="1.4" fill="currentColor"/><circle cx="92" cy="7" r="1.4" fill="currentColor"/></svg>
+      Velvet · General Flores 168 · Providencia
+    </footer>
+  </section>
+
+  <!-- ===== CLUB ===== -->
+  <section id="v-club" hidden>
+    <header class="chero">
+      <span class="chip">Demostración · datos de ejemplo</span>
+      <h2>Vuelve. Suma. Disfruta.</h2>
+      <p>Así se vería el Club dentro de la misma tarjeta del llavero.</p>
+    </header>
+    <nav class="sub" aria-label="Vista del club">
+      <button data-go="#club" id="s-cliente">Cliente</button>
+      <button data-go="#club-personal" id="s-personal">Personal</button>
+      <button data-go="#club-duenos" id="s-duenos">Dueños</button>
+    </nav>
+    <div id="club-body"></div>
+
+    <details class="how">
+      <summary>Cómo funciona y qué lo protege</summary>
+      <div class="in">
+        <ol>
+          <li>Cada cliente recibe un llavero NFC con un identificador único.</li>
+          <li>Al tocarlo con el celular ve su saldo y sus premios, en esta misma tarjeta.</li>
+          <li>Solo el personal, con su PIN, puede sumar visitas o entregar premios.</li>
+        </ol>
+        <h5>Protecciones del sistema real</h5>
+        <ul>
+          <li>Los puntos viven en el servidor del bar, no en el llavero. Copiar un llavero no regala puntos.</li>
+          <li>Un cliente nunca puede sumarse puntos a sí mismo.</li>
+          <li>Máximo una visita cada 6 horas por llavero.</li>
+          <li>Los canjes usan un código de un solo uso que confirma el personal.</li>
+          <li>Cada acción queda registrada con persona y hora. Un llavero perdido se bloquea desde el panel.</li>
+        </ul>
+        <h5>Lo que ve el cliente hoy y mañana</h5>
+        <p style="margin:6px 0 0">Esta maqueta simula el funcionamiento en tu navegador. En el sistema real los datos se guardan en un servidor del local.</p>
+      </div>
+    </details>
+  </section>
+</main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sin" role="dialog" aria-modal="true" aria-labelledby="st">
+    <div class="grab"></div>
+    <div class="sh2"><h3 id="st"></h3><button data-act="close" aria-label="Cerrar">✕</button></div>
+    <div id="sb"></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+
+/* ---------- datos del local (editar aquí) ---------- */
+var WA='56927322714';
+var waLink=function(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(t)};
+var REVIEW='https://www.google.com/maps/place//data=!4m3!3m2!1s0x9662cfd98ebf1ac3:0xb1d25ab9ef7dc974!12e1?source=g.page.m._&laa=merchant-review-solicitation';
+var SCH={0:null,1:[17,25],2:[17,25],3:[17,25],4:[17,26],5:[17,26.5],6:[17,26.5]};
+var HOURS=[['Lunes a miércoles','17:00 – 01:00',[1,2,3]],['Jueves','17:00 – 02:00',[4]],['Viernes y sábado','17:00 – 02:30',[5,6]]];
+
+var I={
+ wa:'<svg viewBox="0 0 24 24"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z"/><path d="M9.2 8.8c0 3 3 6 6 6l.9-1.4-2-1-.9.7c-.8-.4-1.6-1.2-2-2l.7-.9-1-2z" fill="currentColor" stroke="none"/></svg>',
+ book:'<svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>',
+ glass:'<svg viewBox="0 0 24 24"><path d="M4 5h16l-8 9z"/><path d="M12 14v6M8 20h8"/></svg>',
+ space:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 12h16M12 4v16"/></svg>',
+ pin:'<svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>',
+ ig:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17" cy="7" r=".8" fill="currentColor"/></svg>',
+ web:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3.2 3 13.8 0 17M12 3.5c-3 3.2-3 13.8 0 17"/></svg>',
+ copy:'<svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="1.5"/><path d="M5 15V5a1 1 0 0 1 1-1h9"/></svg>'
+};
+
+/* ---------- tiles ---------- */
+var TILES=[
+ {i:'book',t:'Carta',s:'Cocina, coctelería y destilados',href:'https://barvelvet.cl/carta/'},
+ {i:'glass',t:'Eventos y cumpleaños',s:'Celebra en Velvet',sheet:'eventos'},
+ {i:'space',t:'Nuestros espacios',s:'Terrazas y salón climatizado',sheet:'espacios'},
+ {i:'ig',t:'Instagram',s:'@barvelvet.cl',href:'https://www.instagram.com/barvelvet.cl/'},
+ {i:'web',t:'Sitio web',s:'barvelvet.cl',href:'https://barvelvet.cl/'},
+ {i:'wa',t:'Escríbenos',s:'WhatsApp de reservas',href:waLink('Hola Velvet, quisiera hacer una consulta.')}
+];
+$('#tiles').innerHTML=TILES.map(function(x){
+  var inner='<span class="ic">'+I[x.i]+'</span><span><strong>'+esc(x.t)+'</strong><small>'+esc(x.s)+'</small></span>';
+  return x.href?'<a class="tile" href="'+esc(x.href)+'" target="_blank" rel="noopener">'+inner+'</a>':'<button class="tile" data-sheet="'+x.sheet+'">'+inner+'</button>';
+}).join('');
+$$('[data-i]').forEach(function(e){e.innerHTML=I[e.getAttribute('data-i')]});
+$('#wa').href=waLink('Hola Velvet, quiero reservar una mesa. Somos ___ personas, el día ___ a las ___. Sector preferido: ___.');
+$('#rev').href=REVIEW;
+
+/* ---------- visita ---------- */
+var INFO=[['Dirección','General Flores 168, Providencia, Santiago'],['WhatsApp de reservas','+56 9 2732 2714'],['Correo','reservas@barvelvet.cl']];
+$('#info').innerHTML=INFO.map(function(r,i){return '<div class="row"><div><small>'+r[0]+'</small>'+esc(r[1])+'</div><button class="cp" data-copy="'+i+'" aria-label="Copiar '+esc(r[0])+'"><span class="ic">'+I.copy+'</span></button></div>'}).join('');
+
+/* ---------- reloj de Santiago ---------- */
+function nowCL(){
+  var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Santiago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date());
+  var g=function(t){return p.filter(function(x){return x.type===t})[0].value};
+  return {d:{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[g('weekday')],h:(+g('hour'))+(+g('minute'))/60};
+}
+function fmt(h){var x=h%24,hh=Math.floor(x),mm=Math.round((x-hh)*60);return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')}
+function paint(){
+  var n=nowCL(),cur=SCH[n.d],prev=SCH[(n.d+6)%7],open=false,txt;
+  if(prev&&n.h+24<prev[1]){open=true;txt='Abierto ahora · hasta las '+fmt(prev[1])}
+  else if(n.d===0){txt='Hoy domingo · consulta el horario por WhatsApp'}
+  else if(n.h>=cur[0]){open=true;txt='Abierto ahora · hasta las '+fmt(cur[1])}
+  else{txt='Cerrado · abre hoy a las 17:00'}
+  $('#status').className='status'+(open?' open':'');$('#stxt').textContent=txt;
+  var hh,live=false;
+  if(n.d>=1&&n.d<=6&&n.h>=17&&n.h<20){hh='Activo ahora · termina a las 20:00';live=true}
+  else if(n.d>=1&&n.d<=6&&n.h<17){hh='Comienza hoy a las 17:00'}
+  else if(n.d>=1&&n.d<=5){hh='Vuelve mañana a las 17:00'}
+  else{hh='Vuelve el lunes a las 17:00'}
+  var e=$('#hhs');e.textContent=hh;e.className=live?'live':'';
+  var td=n.h<5?(n.d+6)%7:n.d;
+  $('#hours').innerHTML=HOURS.map(function(r){var t=r[2].indexOf(td)>=0;return '<div class="'+(t?'today':'')+'"><span>'+r[0]+(t?'<em>hoy</em>':'')+'</span><span>'+r[1]+'</span></div>'}).join('');
+}
+paint();setInterval(paint,60000);
+
+/* ---------- avisos y portapapeles ---------- */
+var tt;
+function toast(m){var t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true},2600)}
+function copy(txt){
+  var done=function(ok){toast(ok?'Copiado':'Mantén pulsado el texto para copiarlo')};
+  var fb=function(){try{var a=document.createElement('textarea');a.value=txt;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();var ok=document.execCommand('copy');a.remove();done(ok)}catch(e){done(false)}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){done(true)},fb)}else fb();
+}
+
+/* ---------- ventanas emergentes ---------- */
+var SHEETS={
+ eventos:{t:'Eventos y cumpleaños',b:function(){return '<p>Noches que se quedan contigo. Celebra en Velvet y consulta por nuestras opciones para grupos.</p>'+
+   '<h5>Promo todas las semanas</h5><ul><li>Lunes a miércoles · 17:00 a 01:00</li><li>Jueves · 17:00 a 02:00</li><li>Viernes y sábado · 17:00 a 02:30</li></ul>'+
+   '<h5>Happy Hour</h5><ul><li>Lunes a sábado · 17:00 a 20:00 hrs</li></ul>'+
+   '<h5>Eventos privados</h5><p>Celebraciones y momentos especiales. Cotiza tu cumpleaños: tenemos muchos beneficios.</p>'+
+   '<a class="btn gold" target="_blank" rel="noopener" href="'+waLink('Hola Velvet, quiero cotizar un cumpleaños o evento. Fecha: ___. Personas: ___.')+'">Cotizar mi evento</a>'}},
+ espacios:{t:'Nuestros espacios',b:function(){return '<p>Cada rincón está pensado para ti.</p><ul><li>Terraza fumadores sentados</li><li>Sector interior climatizado</li><li>Terraza interior · espacio fumadores de pie</li></ul>'+
+   '<p>Al reservar puedes elegir tu sector: salón interior, terraza interior, terraza exterior fumadores o sin preferencia.</p>'+
+   '<a class="btn gold" target="_blank" rel="noopener" href="'+waLink('Hola Velvet, quiero reservar en el sector: ___.')+'">Reservar mi lugar</a>'}}
+};
+function openSheet(k){var s=SHEETS[k];$('#st').textContent=s.t;$('#sb').innerHTML=s.b();$('#sheet').hidden=false;$('.sin').scrollTop=0;var c=$('.sh2 button');if(c)c.focus()}
+function closeSheet(){$('#sheet').hidden=true}
+
+/* ---------- Club: estado de la demo ---------- */
+var KEY='velvet-demo-1';
+var R=[{id:'r1',pts:30,name:'Schop de cortesía',note:'Summer Ale o Red Ale'},
+       {id:'r2',pts:60,name:'Entrada para compartir',note:'A elección del local'},
+       {id:'r3',pts:100,name:'Cóctel de autor',note:'De la carta Velvet'},
+       {id:'r4',pts:150,name:'Sorpresa de cumpleaños',note:'Para toda tu mesa'}];
+var DAY=864e5;
+function def(){var n=Date.now();return {pts:70,last:n-3*DAY,auth:false,pending:null,log:[
+  {t:n-3*DAY,x:'Visita registrada · +10 pts · Camila (personal)'},{t:n-9*DAY,x:'Visita registrada · +10 pts · Diego (personal)'},{t:n-16*DAY,x:'Visita registrada · +10 pts · Camila (personal)'}]}}
+var S;try{S=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){S=null}
+if(!S||typeof S.pts!=='number')S=def();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var sub='cliente',pin='',pinErr=false,msg='';
+var dshort=function(t){return new Date(t).toLocaleDateString('es-CL',{day:'numeric',month:'short'}).replace('.','')};
+var logHTML=function(){return '<ul class="log">'+S.log.slice(0,6).map(function(l){return '<li><time>'+dshort(l.t)+'</time><span>'+esc(l.x)+'</span></li>'}).join('')+'</ul>'};
+
+function nextInfo(){
+  var nx=R.filter(function(r){return r.pts>S.pts})[0];
+  if(!nx)return {pct:100,txt:'Tienes puntos para canjear cualquier premio.'};
+  var falta=nx.pts-S.pts,vis=Math.ceil(falta/10);
+  var prev=R.filter(function(r){return r.pts<=S.pts}).pop();var base=prev?prev.pts:0;
+  return {pct:Math.max(4,Math.round((S.pts-base)/(nx.pts-base)*100)),txt:'Te faltan '+falta+' puntos ('+vis+(vis===1?' visita':' visitas')+') para: '+nx.name+'.'};
+}
+function viewCliente(){
+  if(S.pending&&Date.now()-S.pending.t>6e5){S.pending=null;save()}
+  var n=nextInfo(),p=S.pending,pr=p&&R.filter(function(r){return r.id===p.id})[0];
+  var h='<div class="member"><div class="m-top"><span>Club Velvet</span><span>N.º VLV-0042</span></div>'+
+   '<div class="m-pts"><b>'+S.pts+'</b><span>puntos</span></div><div class="m-name">Camila R. · socia de ejemplo</div>'+
+   '<div class="bar"><i style="width:'+n.pct+'%"></i></div><p class="m-next">'+esc(n.txt)+'</p></div>';
+  if(p)h+='<div class="pend"><p>Muestra este código al personal para canjear: <b style="color:var(--ivory)">'+esc(pr.name)+'</b></p><span class="code">'+esc(p.code)+'</span><small>Válido por 10 minutos · de un solo uso</small><button class="mini" data-act="cancel">Cancelar canje</button></div>';
+  h+='<section class="sec" style="margin-top:26px"><h2 class="sh">Premios</h2><div class="list">'+R.map(function(r){
+    var ok=S.pts>=r.pts;
+    return '<div class="rw"><div><b>'+esc(r.name)+'</b><small>'+esc(r.note)+' · <span class="c">'+r.pts+' pts</span></small></div>'+
+      (ok?'<button class="mini solid" data-redeem="'+r.id+'"'+(p?' disabled':'')+'>Canjear</button>':'<span class="st">Faltan '+(r.pts-S.pts)+'</span>')+'</div>'}).join('')+'</div>'+
+    '<p class="fine">Premios de ejemplo. El local define cuáles, cuántos puntos cuestan y por cuánto tiempo.</p></section>';
+  h+='<section class="sec" style="margin-top:26px"><h2 class="sh">Mis visitas</h2><div class="list">'+logHTML()+'</div></section>';
+  return h;
+}
+function keypad(){
+  return '<div class="pad">'+[1,2,3,4,5,6,7,8,9].map(function(k){return '<button data-key="'+k+'">'+k+'</button>'}).join('')+'<button data-key="del" aria-label="Borrar">⌫</button><button data-key="0">0</button><span></span></div>';
+}
+function viewPersonal(){
+  if(!S.auth){
+    return '<div class="pin"><h3>Acceso del personal</h3><p class="'+(pinErr?'err':'')+'">'+(pinErr?'PIN incorrecto. Inténtalo de nuevo.':'Ingresa tu PIN de 4 dígitos.')+'</p>'+
+      '<div class="dots">'+[0,1,2,3].map(function(i){return '<i class="'+(i<pin.length?'f':'')+'"></i>'}).join('')+'</div>'+keypad()+
+      '<p class="fine" style="margin-top:16px">PIN de esta demostración: <b style="color:var(--gold-hi)">1234</b>. En el sistema real cada persona tiene su propio PIN y queda registrado quién hizo cada acción.</p></div>';
+  }
+  var p=S.pending,pr=p&&R.filter(function(r){return r.id===p.id})[0];
+  var h='<div class="who"><span>Sesión de <b>Camila (demo)</b></span><button class="mini" data-act="logout">Cerrar sesión</button></div>'+
+   '<div class="scan"><small>Llavero detectado</small><h3>Camila R.</h3><p>N.º VLV-0042 · saldo actual <b style="color:var(--gold-hi)">'+S.pts+' pts</b></p>'+
+   '<button class="btn gold shine" data-act="visit">Sumar visita · +10 pts</button>'+(msg?'<div class="note">'+esc(msg)+'</div>':'')+'</div>';
+  h+='<section class="sec" style="margin-top:22px"><h2 class="sh">Canje pendiente</h2>'+(p?
+    '<div class="scan" style="margin:0"><small>El cliente pide</small><h3>'+esc(pr.name)+'</h3><p>Código <b style="color:var(--gold-hi)">'+esc(p.code)+'</b> · cuesta '+pr.pts+' pts</p><button class="btn gold" data-act="deliver">Confirmar entrega</button></div>':
+    '<div class="list"><p class="fine" style="padding:14px 16px;margin:0;text-align:left">Sin canjes pendientes. El cliente genera su código desde su llavero y el personal lo confirma aquí.</p></div>')+'</section>';
+  h+='<section class="sec" style="margin-top:22px"><h2 class="sh">Reglas activas</h2><div class="list" style="padding:14px 16px"><ul class="rules"><li>1 visita cada 6 horas por llavero.</li><li>Los canjes piden un código de un solo uso.</li><li>Cada acción queda con persona y hora.</li></ul><button class="mini" style="margin-top:6px" data-act="skip">Simular que pasaron 6 horas</button></div></section>';
+  h+='<section class="sec" style="margin-top:22px"><h2 class="sh">Registro</h2><div class="list">'+logHTML()+'</div></section>';
+  return h;
+}
+var WK=[['Lun',34],['Mar',38],['Mié',47],['Jue',70],['Vie',108],['Sáb',115]];
+function viewDuenos(){
+  var mx=115;
+  var h='<p class="fine demo">Datos de ejemplo para mostrar el panel. No son cifras de Velvet.</p>'+
+   '<div class="kpis"><div class="kpi"><b>128</b><span>Socios activos</span></div><div class="kpi"><b>412</b><span>Visitas del mes</span></div><div class="kpi"><b>37</b><span>Premios canjeados</span></div><div class="kpi"><b>41%</b><span>Vuelven 2 o más veces</span></div></div>'+
+   '<section class="sec" style="margin-top:22px"><div class="chart"><h4>Visitas por día de la semana</h4><p>Últimas 4 semanas · total 412</p><div class="bars">'+
+   WK.map(function(w){return '<div><em>'+w[1]+'</em><i style="height:'+Math.round(w[1]/mx*104)+'px"></i></div>'}).join('')+'</div><div class="axis">'+WK.map(function(w){return '<span>'+w[0]+'</span>'}).join('')+'</div></div></section>'+
+   '<section class="sec" style="margin-top:22px"><h2 class="sh">Premios más canjeados</h2><div class="list">'+
+   [['Schop de cortesía',18],['Entrada para compartir',11],['Cóctel de autor',8]].map(function(r){return '<div class="rw"><b>'+r[0]+'</b><span class="c" style="font-variant-numeric:tabular-nums">'+r[1]+'</span></div>'}).join('')+'</div></section>'+
+   '<section class="sec" style="margin-top:22px"><h2 class="sh">Lo que podrán hacer los dueños</h2><div class="list" style="padding:14px 16px"><ul class="rules"><li>Cambiar premios y puntos cuando quieran.</li><li>Ver quién registró cada visita y cada canje.</li><li>Bloquear un llavero perdido al instante.</li><li>Exportar la lista de socios y sus visitas.</li></ul></div></section>';
+  return h;
+}
+function renderClub(){
+  $$('.sub button').forEach(function(b){b.setAttribute('aria-selected',String(b.id==='s-'+sub))});
+  $('#club-body').innerHTML=sub==='cliente'?viewCliente():sub==='personal'?viewPersonal():viewDuenos();
+}
+
+/* ---------- acciones del Club ---------- */
+function addVisit(){
+  var hrs=(Date.now()-S.last)/36e5;
+  if(hrs<6){var m=Math.max(1,Math.floor(hrs*60));msg='Regla anti-abuso: este llavero sumó hace '+(m<60?m+' min':Math.floor(hrs)+' h')+'. El mínimo entre visitas es de 6 horas.';toast('Visita rechazada por la regla de 6 horas');renderClub();return}
+  msg='';S.pts+=10;S.last=Date.now();S.log.unshift({t:Date.now(),x:'Visita registrada · +10 pts · Camila (personal demo)'});save();toast('+10 puntos registrados');renderClub();
+}
+function redeem(id){var r=R.filter(function(x){return x.id===id})[0];if(!r||S.pts<r.pts||S.pending)return;S.pending={id:id,code:'VLT-'+(1000+Math.floor(Math.random()*9000)),t:Date.now()};save();renderClub()}
+function deliver(){var p=S.pending;if(!p)return;var r=R.filter(function(x){return x.id===p.id})[0];S.pts-=r.pts;S.log.unshift({t:Date.now(),x:'Canje entregado · '+r.name+' · −'+r.pts+' pts'});S.pending=null;msg='';save();toast('Premio entregado');renderClub()}
+function pinKey(k){
+  pinErr=false;
+  if(k==='del')pin=pin.slice(0,-1);else if(pin.length<4)pin+=k;
+  if(pin.length===4){if(pin==='1234'){S.auth=true;save();toast('Sesión de personal iniciada')}else{pinErr=true}pin=''}
+  renderClub();
+}
+
+/* ---------- navegación ---------- */
+function route(){
+  var h=(location.hash||'#tarjeta').slice(1),club=h.indexOf('club')===0;
+  $('#v-card').hidden=club;$('#v-club').hidden=!club;
+  $('#tab-card').setAttribute('aria-selected',String(!club));$('#tab-club').setAttribute('aria-selected',String(club));
+  if(club){sub=h==='club-personal'?'personal':h==='club-duenos'?'duenos':'cliente';msg='';renderClub()}
+  closeSheet();window.scrollTo(0,0);
+}
+addEventListener('hashchange',route);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-go],[data-sheet],[data-copy],[data-act],[data-redeem],[data-key]');
+  if(e.target.id==='sheet'){closeSheet();return}
+  if(!t)return;var d=t.dataset;
+  if(d.go){location.hash=d.go}
+  else if(d.sheet){openSheet(d.sheet)}
+  else if(d.copy!==undefined){copy(INFO[+d.copy][1])}
+  else if(d.redeem){redeem(d.redeem)}
+  else if(d.key){pinKey(d.key)}
+  else if(d.act==='close'){closeSheet()}
+  else if(d.act==='visit'){addVisit()}
+  else if(d.act==='deliver'){deliver()}
+  else if(d.act==='cancel'){S.pending=null;save();renderClub()}
+  else if(d.act==='logout'){S.auth=false;save();renderClub()}
+  else if(d.act==='skip'){S.last-=6*36e5;msg='';save();toast('Pasaron 6 horas: ya se puede sumar otra visita');renderClub()}
+});
+route();
+})();
+</script>
+
+</html>
